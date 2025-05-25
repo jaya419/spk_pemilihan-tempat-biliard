@@ -8,20 +8,12 @@
         <div class="card-header bg-teal text-white d-flex justify-content-between align-items-center py-3 rounded-top-4">
             <h2 class="h5 mb-0"><i class="bi bi-person-plus-fill me-2"></i> Tambah Karyawan Baru</h2>
         </div>
-
-        <div class="card-body p-3"> {{-- Reduced padding from p-4 to p-3 --}}
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                    <h5 class="alert-heading mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i> Terjadi Kesalahan!</h5>
-                    <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="card-body p-3">
+            @if ($errors->has('duplicate'))
+                <div class="alert alert-danger">
+                    {{ $errors->first('duplicate') }}
                 </div>
             @endif
-
             <form action="{{ route('karyawan.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">

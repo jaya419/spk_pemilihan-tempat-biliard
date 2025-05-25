@@ -9,19 +9,12 @@
             <h2 class="h5 mb-0"><i class="bi bi-person-fill-gear me-2"></i> Edit Data Karyawan</h2> {{-- Changed title and added icon --}}
         </div>
 
-        <div class="card-body p-3"> {{-- Reduced padding from p-4 to p-3 --}}
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                    <h5 class="alert-heading mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i> Terjadi Kesalahan!</h5>
-                    <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="card-body p-3">
+            @if ($errors->has('duplicate'))
+                <div class="alert alert-danger">
+                    {{ $errors->first('duplicate') }}
                 </div>
             @endif
-
             <form action="{{ route('karyawan.update', $karyawan->id) }}" method="POST">
                 @csrf
                 @method('PUT') {{-- Essential for update operations in Laravel --}}

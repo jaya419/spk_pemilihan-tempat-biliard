@@ -17,22 +17,32 @@ class KriteriaController extends Controller
     }
 
     public function store(Request $request){
-    if (kriterias::count() >= 5) {
-        return redirect()->route('kriteria.index')->with('error', 'Maksimal hanya 5 kriteria yang diperbolehkan.');
-    }
+        if (kriterias::count() >= 5) {
+            return redirect()->route('kriteria.index')->with('error', 'Maksimal hanya 5 kriteria yang diperbolehkan.');
+        }
+
         $request->validate([
             'nama' => 'required',
             'bobot' => 'required|numeric|min:1|max:100',
             'tipe' => 'required|in:cost,benefit',
         ]);
 
-    $totalBobot = kriterias::sum('bobot') + $request->bobot;
+        $exists = kriterias::where('nama', $request->nama)
+            ->exists();
 
-    if ($totalBobot > 100) {
-        return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 100.');
-    }
-    kriterias::create($request->all());
-    return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil ditambahkan.');
+        if ($exists) {
+            return redirect()->back()->withInput()->withErrors([
+                'duplicate' => 'Kriteria dengan informasi yang sama sudah ada.'
+            ]);
+        }
+
+        $totalBobot = kriterias::sum('bobot') + $request->bobot;
+        if ($totalBobot > 100) {
+            return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 100.');
+        }
+
+        kriterias::create($request->all());
+        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil ditambahkan.');
     }
 
     public function edit($id){
@@ -47,16 +57,24 @@ class KriteriaController extends Controller
             'tipe' => 'required|in:cost,benefit',
         ]);
 
-    $kriteria = kriterias::findOrFail($id);
-    
-    $totalBobot = (kriterias::sum('bobot') - $kriteria->bobot) + $request->bobot;
+        $kriteria = kriterias::findOrFail($id);
+        $exists = kriterias::where('id', '!=', $id)
+            ->where('nama', $request->nama)
+            ->exists();
 
-    if ($totalBobot > 100) {
-        return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 100.');
-    }
+        if ($exists) {
+            return redirect()->back()->withInput()->withErrors([
+                'duplicate' => 'Kriteria sudah ada.'
+            ]);
+        }
 
-    $kriteria->update($request->all());
-    return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil diupdate.');
+        $totalBobot = (kriterias::sum('bobot') - $kriteria->bobot) + $request->bobot;
+        if ($totalBobot > 100) {
+            return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 100.');
+        }
+
+        $kriteria->update($request->all());
+        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil diupdate.');
     }
 
     public function destroy($id){
@@ -66,4 +84,3 @@ class KriteriaController extends Controller
         return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil dihapus.'); 
     }   
 }
-

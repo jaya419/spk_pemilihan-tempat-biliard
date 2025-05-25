@@ -19,7 +19,6 @@ class KaryawanController extends Controller
         }
 
         $karyawans = $query->get();
-
         return view('karyawan.index', compact('karyawans'));
     }
 
@@ -35,8 +34,18 @@ class KaryawanController extends Controller
             'alamat' => 'required',
         ]);
 
-        karyawans::create($request->all());
+        $exists = karyawans::where('nama', $request->nama)
+            ->where('email', $request->email)
+            ->where('telepon', $request->telepon)
+            ->exists();
 
+        if ($exists) {
+            return redirect()->back()->withInput()->withErrors([
+                'duplicate' => 'Data karyawan dengan informasi yang sama sudah ada.'
+            ]);
+        }
+
+        karyawans::create($request->all());
         return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil ditambahkan.');
     }
 
@@ -53,16 +62,26 @@ class KaryawanController extends Controller
             'alamat' => 'required',
         ]);
 
+        $exists = karyawans::where('id', '!=', $id)
+            ->where('nama', $request->nama)
+            ->where('email', $request->email)
+            ->where('telepon', $request->telepon)
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()->withInput()->withErrors([
+                'duplicate' => 'Data karyawan dengan informasi yang sama sudah ada.'
+            ]);
+        }
+
         $karyawan = karyawans::findOrFail($id);
         $karyawan->update($request->all());
-
         return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil diupdate.');
     }
 
     public function destroy($id){
         $karyawan = karyawans::findOrFail($id);
         $karyawan->delete();
-
         return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil dihapus.');
     }
 }
