@@ -1,0 +1,49 @@
+body {
+font-family: Arial, sans-serif;
+background-color: #f8f9fa;
+}
+.banner {
+background-image: url('/foto/background.jpg');
+background-size: cover;
+background-position: center;
+height: 300px;
+color: white;
+text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.banner h1 {
+font-size: 3rem;
+}
+.form-container {
+background: white;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.gallery img {
+width: 100%;
+height: auto;
+border-radius: 10px;
+transition: transform 0.3s;
+}
+.gallery img:hover {
+transform: scale(1.05);
+}
+.features {
+text-align: center;
+margin-top: 40px;
+}
+.feature-item {
+display: inline-block;
+width: 150px;
+margin: 10px;
+}
+.feature-item img {
+width: 50px;
+}
+.feature-item p {
+margin-top: 10px;
+font-weight: bold;
+}
