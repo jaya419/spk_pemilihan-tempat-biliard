@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('email');
-            $table->string('telepon');
-            $table->string('alamat');
+            $table->string('nama')->unique();      // nama unik
+            $table->string('email')->unique();     // email unik
+            $table->string('telepon')->unique();   // telepon unik
+            $table->text('alamat');
             $table->timestamps();
-        });
-        
+        });   
     }
 
     /**

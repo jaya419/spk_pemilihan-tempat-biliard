@@ -27,26 +27,26 @@ class KaryawanController extends Controller
     }
 
     public function store(Request $request){
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email',
-            'telepon' => 'required',
-            'alamat' => 'required',
+    $request->validate([
+        'nama' => 'required|string|max:255|unique:karyawans,nama',
+        'email' => 'required|email|max:255|unique:karyawans,email',
+        'telepon' => 'required|string|max:20|unique:karyawans,telepon',
+        'alamat' => 'required|string',
+    ]);
+
+    $exists = karyawans::where('nama', $request->nama)
+        ->where('email', $request->email)
+        ->where('telepon', $request->telepon)
+        ->exists();
+
+    if ($exists) {
+        return redirect()->back()->withInput()->withErrors([
+            'duplicate' => 'Data karyawan dengan nama, email, dan telepon tersebut sudah ada.'
         ]);
+    }
 
-        $exists = karyawans::where('nama', $request->nama)
-            ->where('email', $request->email)
-            ->where('telepon', $request->telepon)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->withInput()->withErrors([
-                'duplicate' => 'Data karyawan dengan informasi yang sama sudah ada.'
-            ]);
-        }
-
-        karyawans::create($request->all());
-        return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil ditambahkan.');
+    karyawans::create($request->all());
+    return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil ditambahkan.');
     }
 
     public function edit($id){
@@ -55,28 +55,28 @@ class KaryawanController extends Controller
     }
 
     public function update(Request $request, $id){
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email',
-            'telepon' => 'required',
-            'alamat' => 'required',
+    $request->validate([
+        'nama' => 'required|string|max:255|unique:karyawans,nama,' . $id,
+        'email' => 'required|email|max:255|unique:karyawans,email,' . $id,
+        'telepon' => 'required|string|max:20|unique:karyawans,telepon,' . $id,
+        'alamat' => 'required|string',
+    ]);
+
+    $exists = karyawans::where('id', '!=', $id)
+        ->where('nama', $request->nama)
+        ->where('email', $request->email)
+        ->where('telepon', $request->telepon)
+        ->exists();
+
+    if ($exists) {
+        return redirect()->back()->withInput()->withErrors([
+            'duplicate' => 'Data karyawan dengan nama, email, dan telepon tersebut sudah ada.'
         ]);
+    }
 
-        $exists = karyawans::where('id', '!=', $id)
-            ->where('nama', $request->nama)
-            ->where('email', $request->email)
-            ->where('telepon', $request->telepon)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->back()->withInput()->withErrors([
-                'duplicate' => 'Data karyawan dengan informasi yang sama sudah ada.'
-            ]);
-        }
-
-        $karyawan = karyawans::findOrFail($id);
-        $karyawan->update($request->all());
-        return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil diupdate.');
+    $karyawan = karyawans::findOrFail($id);
+    $karyawan->update($request->all());
+    return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil diupdate.');
     }
 
     public function destroy($id){
