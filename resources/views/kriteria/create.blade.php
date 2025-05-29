@@ -1,82 +1,66 @@
-@extends('layouts.app')
-
-@section('title', 'Tambah Kriteria')
+@extends('layouts.app') {{-- Assuming you have a layout file --}}
 
 @section('content')
-<div class="container-fluid py-3">
-    <div class="card shadow-lg border-0 rounded-4">
-        <div class="card-header bg-teal text-white d-flex justify-content-between align-items-center py-3 rounded-top-4">
-            <h2 class="h5 mb-0"><i class="bi bi-journal-plus me-2"></i> Tambah Kriteria Baru</h2> {{-- Icon changed to bi-journal-plus --}}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="mb-0">Tambahkan Kriteria Baru</h2>
         </div>
-
-        <div class="card-body p-3">
-            @if ($errors->has('duplicate'))
-                <div class="alert alert-danger">
-                    {{ $errors->first('duplicate') }}
+        <div class="card-body p-4">
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                        @if ($errors->has('duplicate'))
+                            <li>{{ $errors->first('duplicate') }}</li>
+                        @endif
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+
             <form action="{{ route('kriteria.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">
-                    <label for="nama" class="form-label fw-semibold">Nama Kriteria</label>
-                    <input type="text" name="nama" id="nama" 
-                           class="form-control rounded-3 @error('nama') is-invalid @enderror" 
-                           value="{{ old('nama') }}" placeholder="Contoh: Kedisiplinan, Kualitas Kerja" required>
-                    @error('nama')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <label for="name" class="form-label fw-bold">Nama Kriteria <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Contoh: Harga, Jarak, Fasilitas" required>
+                    @error('name')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="bobot" class="form-label fw-semibold">Bobot (%)</label>
-                    <input type="number" name="bobot" id="bobot" 
-                           class="form-control rounded-3 @error('bobot') is-invalid @enderror" 
-                           value="{{ old('bobot') }}" min="1" max="100" placeholder="Masukkan bobot antara 1-100" required>
-                    @error('bobot')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <label for="weight" class="form-label fw-bold">Bobot (%) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control @error('weight') is-invalid @enderror" id="weight" name="weight" value="{{ old('weight') }}" min="1" max="100" placeholder="Contoh: 25" required>
+                    <div class="form-text">Masukkan bobot dalam persentase (1-100).</div>
+                    @error('weight')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                     @enderror
                 </div>
-                <div class="mb-4"> {{-- Increased margin-bottom for spacing before buttons --}}
-                    <label for="tipe" class="form-label fw-semibold">Tipe</label>
-                    <select name="tipe" id="tipe" 
-                            class="form-select rounded-3 @error('tipe') is-invalid @enderror" required>
-                        <option value="" disabled selected>Pilih tipe (Cost/Benefit)</option>
-                        <option value="cost" {{ old('tipe') == 'cost' ? 'selected' : '' }}>Cost</option>
-                        <option value="benefit" {{ old('tipe') == 'benefit' ? 'selected' : '' }}>Benefit</option>
+                <div class="mb-3">
+                    <label for="type" class="form-label fw-bold">Tipe <span class="text-danger">*</span></label>
+                    <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
+                        <option value="">Pilih Tipe</option>
+                        <option value="cost" {{ old('type') == 'cost' ? 'selected' : '' }}>Cost</option>
+                        <option value="benefit" {{ old('type') == 'benefit' ? 'selected' : '' }}>Benefit</option>
                     </select>
-                    @error('tipe')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    @error('type')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                     @enderror
                 </div>
-                
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-teal shadow-sm rounded-pill px-4">
-                        <i class="bi bi-save-fill me-2"></i> Simpan Kriteria
-                    </button>
-                    <a href="{{ route('kriteria.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
-                        <i class="bi bi-x-circle-fill me-2"></i> Batal
-                    </a>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="submit" class="btn btn-success px-4">Simpan</button>
+                    <a href="{{ route('kriteria.index') }}" class="btn btn-secondary px-4">Batal</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<style>
-    /* Custom Teal Color */
-    .bg-teal {
-        background-color: #20c997 !important;
-    }
-
-    .btn-teal {
-        color: #fff;
-        background-color: #20c997;
-        border-color: #20c997;
-    }
-
-    .btn-teal:hover {
-        color: #fff;
-        background-color: #1abc9c;
-        border-color: #1abc9c;
-    }
-</style>
 @endsection

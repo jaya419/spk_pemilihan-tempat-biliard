@@ -1,15 +1,16 @@
 <?php
 
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
         $this->call([
-            KriteriaSeeder::class,
-            KaryawanSeeder::class,
+            AlternativesSeeder::class,
+            CriteriaSeeder::class,
             AdminSeeder::class,
         ]);
     }

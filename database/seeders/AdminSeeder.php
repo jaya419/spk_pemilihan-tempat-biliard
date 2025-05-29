@@ -12,13 +12,12 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        if (DB::table('users')->where('email', 'acha@gmail.com')->doesntExist()) {
+        if (DB::table('users')->where('email', 'Zulfiansyah@gmail.com')->doesntExist()) {
             DB::table('users')->insert([
-                'name' => 'Siti Nurhaliza',
-                'email' => 'acha@gmail.com',
+                'name' => 'Zulfiansyah',
+                'email' => 'Zulfiansyah@gmail.com',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password'),
-                'profile_picture' => 'acha.jpg',
+                'password' => Hash::make('123'),
                 'remember_token' => Str::random(10),
                 'created_at' => now(),
                 'updated_at' => now(),
