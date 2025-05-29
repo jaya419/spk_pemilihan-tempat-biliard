@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Assuming you have a layout file --}}
+@extends('layouts.app')
 
 @section('content')
 <div class="container py-4">
@@ -33,9 +33,9 @@
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="weight" class="form-label fw-bold">Bobot (%) <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control @error('weight') is-invalid @enderror" id="weight" name="weight" value="{{ old('weight') }}" min="1" max="100" placeholder="Contoh: 25" required>
-                    <div class="form-text">Masukkan bobot dalam persentase (1-100).</div>
+                    <label for="weight" class="form-label fw-bold">Bobot <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control @error('weight') is-invalid @enderror" id="weight" name="weight" value="{{ old('weight') }}" min="0.01" max="1" placeholder="Contoh: 0.25" required>
+                    <div class="form-text">Masukkan bobot dalam bentuk desimal (0 - 1), contoh: 0.25 untuk 25%.</div>
                     @error('weight')
                         <div class="invalid-feedback">
                             {{ $message }}
