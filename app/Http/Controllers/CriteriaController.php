@@ -26,7 +26,7 @@ class CriteriaController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'weight' => 'required|numeric|min:1|max:100',
+            'weight' => 'required|numeric|min:0.01|max:1',
             'type' => 'required|in:cost,benefit',
         ]);
 
@@ -38,8 +38,8 @@ class CriteriaController extends Controller
         }
 
         $totalWeight = Criterion::sum('weight') + $request->weight;
-        if ($totalWeight > 100) {
-            return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 100.');
+        if ($totalWeight > 1) {
+            return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 1.');
         }
 
         Criterion::create($request->only(['name', 'weight', 'type']));
@@ -56,7 +56,7 @@ class CriteriaController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'weight' => 'required|numeric|min:1|max:100',
+            'weight' => 'required|numeric|min:0.01|max:1',
             'type' => 'required|in:cost,benefit',
         ]);
 
@@ -72,8 +72,8 @@ class CriteriaController extends Controller
         }
 
         $totalWeight = (Criterion::sum('weight') - $kriteria->weight) + $request->weight;
-        if ($totalWeight > 100) {
-            return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 100.');
+        if ($totalWeight > 1) {
+            return redirect()->route('kriteria.index')->with('error', 'Total bobot tidak boleh melebihi 1.');
         }
 
         $kriteria->update($request->only(['name', 'weight', 'type']));
